@@ -1,0 +1,11 @@
+.Projects {
+  display: flex;
+  position: absolute;
+  flex-direction: row;
+  justify-content: center;
+  align-content: flex-start;
+  align-items: center;
+  padding: 48px;
+  flex-wrap: wrap;
+  gap: 36px;
+}

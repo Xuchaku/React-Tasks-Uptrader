@@ -1,0 +1,21 @@
+@import "./../../global/style.scss";
+.Project {
+  background-color: white;
+  padding: 36px 24px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  min-width: 300px;
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 20%) 0px 2px 1px -1px,
+    rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px;
+  & a:last-child {
+    align-self: flex-end;
+  }
+  h1 {
+    margin-bottom: 48px;
+  }
+  & > a {
+    @extend %links;
+  }
+}
