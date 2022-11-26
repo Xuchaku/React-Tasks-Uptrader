@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
 import React from "react";
 import Project from "../../components/Project/Project";
+import IProject from "../../types/IProject/IPpoject";
+import { useSelector, useDispatch } from "react-redux";
 import styles from "./Projects.module.scss";
+import storeProjects from "../../types/storeProjects/storeProjects";
 
 const projectsVariants = {
   visible: (i: number) => {
@@ -9,7 +13,7 @@ const projectsVariants = {
       scale: 1,
       opacity: 1,
       transition: {
-        delay: i * 0.05,
+        delay: 1 + i * 0.05,
       },
     };
   },
@@ -20,32 +24,30 @@ const projectsVariants = {
 };
 const containerVariants = {
   hidden: {
-    background: "#ff0000",
+    background: "#e7ebf",
+    width: 0,
+    height: 0,
+    minHeight: 0,
   },
   visible: {
-    background: "#0000ff",
-    transition: { duration: 2 },
+    background: "#663399",
+    width: "100%",
+    height: "auto",
+    minHeight: "100vh",
+    transition: { duration: 1 },
   },
   exit: {
-    background: "#ff0000",
-    transition: { duration: 2 },
+    background: "#ffffff",
+    opacity: 0,
+    transition: { duration: 0.4 },
   },
 };
 
 const Projects = () => {
-  const projects = [
-    { name: "First", id: 1 },
-    { name: "Two", id: 2 },
-    { name: "Two", id: 3 },
-    { name: "Two", id: 4 },
-    { name: "Two", id: 5 },
-    { name: "Two", id: 6 },
+  const projects = useSelector<storeProjects, IProject[]>(
+    (state) => state.projects
+  );
 
-    { name: "Two", id: 7 },
-    { name: "Two", id: 8 },
-    { name: "Two", id: 9 },
-    { name: "Two", id: 10 },
-  ];
   return (
     <motion.div
       className={styles.Projects}
@@ -59,6 +61,7 @@ const Projects = () => {
           <Project
             key={project.id}
             name={project.name}
+            id={project.id}
             index={index}
             animationVariant={projectsVariants}
           ></Project>

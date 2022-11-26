@@ -1,0 +1,27 @@
+.Tasks {
+  position: absolute;
+  padding: 2em;
+}
+.Back {
+  a {
+    color: white;
+    text-decoration: none;
+  }
+}
+
+.Columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+  padding: 24px;
+  row-gap: 24px;
+
+  column-gap: 24px;
+  @media screen and (max-width: 900px) {
+    flex-wrap: wrap;
+  }
+  //   @media screen and (min-width: $medium) {
+  //     //do Smth
+  //   }
+}

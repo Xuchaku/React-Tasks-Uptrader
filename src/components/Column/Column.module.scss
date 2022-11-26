@@ -1,0 +1,17 @@
+.Column {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  width: 100%;
+  border-radius: 4px;
+  & > h1 {
+    text-align: center;
+  }
+  h1:first-child:after {
+    content: "";
+    display: block;
+    border: 1px solid #663399;
+  }
+}
