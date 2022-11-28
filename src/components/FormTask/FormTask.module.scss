@@ -1,0 +1,46 @@
+.FormTodo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 24px;
+  max-width: 700px;
+}
+
+.FormElement {
+  display: flex;
+  align-items: flex-start;
+  column-gap: 24px;
+  width: 100%;
+  white-space: nowrap;
+  & > p {
+    min-width: 120px;
+    font-family: black;
+    font-size: 24px;
+    color: black;
+  }
+}
+.Files {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 24px;
+}
+.File {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 12px;
+  align-items: center;
+  span {
+    font-family: black;
+    font-size: 12px;
+    color: black;
+  }
+  & > svg:last-child {
+    cursor: pointer;
+  }
+  & > svg {
+    width: 20px;
+    height: 20px;
+    fill: black;
+  }
+}

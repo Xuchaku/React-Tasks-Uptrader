@@ -1,15 +1,24 @@
 import { motion } from "framer-motion";
-import React from "react";
-import { Link, useParams } from "react-router-dom";
-import { DragDropContext } from "react-beautiful-dnd";
+import React, { useState } from "react";
+import { Link, redirect, useNavigate, useParams } from "react-router-dom";
+import {
+  DragDropContext,
+  DropResult,
+  ResponderProvided,
+} from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import Column from "../../components/Column/Column";
 import styles from "./Tasks.module.scss";
-
-import { useSelector } from "react-redux";
+import Portal from "../../UI/Portal/Portal";
+import { useDispatch, useSelector } from "react-redux";
 import IProject from "../../types/IProject/IPpoject";
 import storeProjects from "../../types/storeProjects/storeProjects";
 import ITasks from "../../types/ITasks/ITasks";
+import { setMovedTask, setNewTask, setTaskById } from "../../store/reducer";
+import Stage from "../../types/Stage/Stage";
+import Popup from "../../UI/Popup/Popup";
+import FormTask from "../../components/FormTask/FormTask";
+import ITask from "../../types/ITask/ITask";
 
 const containerVariants = {
   hidden: {
@@ -46,46 +55,95 @@ const divVariants = {
 };
 
 const Tasks = () => {
-  let { id } = useParams();
+  let { id: idProject } = useParams();
   const projects = useSelector<storeProjects, IProject[]>(
     (state) => state.projects
   );
+  const [targetTask, setTargetTask] = useState<ITask | null>(null);
+  const dispatch = useDispatch();
+  const [isOpenedModal, setIsOpenedModal] = useState(false);
   const tasks = Object.entries(
-    projects.find((project) => project.id == id)?.tasks as ITasks
-  );
+    projects.find((project) => project.id == idProject)?.tasks as ITasks
+  ) as [Stage, ITask[]][];
+
+  function selectTargetTask(task: ITask) {
+    setTargetTask(task);
+    setIsOpenedModal(true);
+  }
+  function closeModal() {
+    setIsOpenedModal(false);
+  }
+  function addTask(task: ITask) {
+    dispatch(setNewTask(idProject as string, task));
+    setIsOpenedModal(false);
+  }
+
+  function changeTask(idTask: string, task: ITask) {
+    dispatch(setTaskById(idProject as string, idTask, task));
+    setIsOpenedModal(false);
+  }
+  function endDragHandler(result: DropResult, provided: ResponderProvided) {
+    dispatch(
+      setMovedTask(
+        idProject as string,
+        result.source.droppableId as Stage,
+        result.source.index,
+        result.destination?.droppableId as Stage,
+        result.destination?.index
+      )
+    );
+    console.log(result.draggableId, result.source, result.destination);
+  }
 
   return (
-    <motion.div
-      className={styles.Tasks}
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-    >
+    <>
+      <Portal>
+        <Popup isOpened={isOpenedModal} onClose={closeModal}>
+          <FormTask
+            changeTask={changeTask}
+            addTask={addTask}
+            targetTask={targetTask}
+          ></FormTask>
+        </Popup>
+      </Portal>
       <motion.div
-        className={styles.Back}
-        variants={divVariants}
+        className={styles.Tasks}
+        variants={containerVariants}
         initial="hidden"
         animate="visible"
+        exit="exit"
       >
-        <h1>
-          <Link to="/">Назад</Link>
-        </h1>
-      </motion.div>
-      <DragDropContext onDragEnd={() => {}}>
         <motion.div
-          className={styles.Columns}
+          className={styles.Back}
           variants={divVariants}
           initial="hidden"
           animate="visible"
-          custom={0.5}
         >
-          {tasks.map(([name, tasks]) => {
-            return <Column title={name} tasks={tasks}></Column>;
-          })}
+          <h1>
+            <Link to="/">Назад</Link>
+          </h1>
         </motion.div>
-      </DragDropContext>
-    </motion.div>
+        <DragDropContext onDragEnd={endDragHandler}>
+          <motion.div
+            className={styles.Columns}
+            variants={divVariants}
+            initial="hidden"
+            animate="visible"
+            custom={0.5}
+          >
+            {tasks.map(([name, tasks]) => {
+              return (
+                <Column
+                  selectTargetTask={selectTargetTask}
+                  title={name}
+                  tasks={tasks}
+                ></Column>
+              );
+            })}
+          </motion.div>
+        </DragDropContext>
+      </motion.div>
+    </>
   );
 };
 

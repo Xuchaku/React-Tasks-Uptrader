@@ -1,17 +1,27 @@
-.Column {
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
+@import "./../../global/style.scss";
+.WrapperColumn {
+  background-color: $bg-theme;
+  height: auto;
   width: 100%;
   border-radius: 4px;
   & > h1 {
     text-align: center;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    color: white;
   }
   h1:first-child:after {
     content: "";
     display: block;
+
     border: 1px solid #663399;
   }
+}
+.Column {
+  display: flex;
+  flex-direction: column;
+
+  padding: 12px;
+  height: auto;
+  background-color: $bg-theme;
 }

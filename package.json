@@ -14,6 +14,7 @@
     "@types/uuid": "^8.3.4",
     "dayjs": "^1.11.6",
     "framer-motion": "^7.6.12",
+    "immer": "^9.0.16",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",

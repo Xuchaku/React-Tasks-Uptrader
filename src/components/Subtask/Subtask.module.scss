@@ -1,0 +1,57 @@
+.Subtask {
+  padding: 12px 10px;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: rgb(0 0 0 / 20%) 0px 2px 1px -1px,
+    rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px;
+  .Header {
+    display: flex;
+    flex-direction: row;
+
+    flex-wrap: nowrap;
+    margin-bottom: 16px;
+
+    .Main {
+      display: flex;
+      align-items: center;
+      .Priority {
+        display: flex;
+        flex-direction: row;
+        margin-left: 16px;
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+    .Status {
+      width: 60px;
+      height: 20px;
+      border-radius: 20px;
+      margin-left: auto;
+      box-shadow: rgb(0 0 0 / 20%) 0px 2px 0px 0px,
+        rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px;
+    }
+  }
+  .Date {
+    margin-bottom: 6px;
+  }
+
+  .Meta {
+    margin-bottom: 16px;
+    .Work {
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: row;
+      column-gap: 8px;
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+  .Description {
+    margin-bottom: 24px;
+  }
+}

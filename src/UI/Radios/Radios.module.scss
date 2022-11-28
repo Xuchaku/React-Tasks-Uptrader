@@ -1,0 +1,12 @@
+.Radios {
+  display: flex;
+  flex-direction: row;
+  column-gap: 16px;
+  align-items: center;
+  input {
+    display: none;
+  }
+  label {
+    cursor: pointer;
+  }
+}

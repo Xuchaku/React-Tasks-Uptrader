@@ -1,0 +1,88 @@
+@import "./../../global/style.scss";
+.Task {
+  padding: 24px 16px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  border: 1px solid $bg-main-ui;
+  box-shadow: rgb(0 0 0 / 20%) 0px 2px 1px -1px,
+    rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px;
+  background-color: white;
+  .Header {
+    display: flex;
+    flex-direction: row;
+
+    flex-wrap: nowrap;
+    margin-bottom: 16px;
+    .Svgs {
+      margin-left: auto;
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+    .Main {
+      display: flex;
+      align-items: center;
+      .Priority {
+        display: flex;
+        flex-direction: row;
+        margin-left: 16px;
+        svg {
+          width: 32px;
+          height: 32px;
+        }
+      }
+    }
+  }
+  .Date {
+    margin-bottom: 6px;
+  }
+
+  .Meta {
+    margin-bottom: 16px;
+    .Work {
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      column-gap: 4px;
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+  .Description {
+    margin-bottom: 24px;
+  }
+  .Collapse {
+    margin-bottom: 16px;
+  }
+
+  .Files {
+    margin-bottom: 24px;
+    .FilesList {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: row;
+      column-gap: 12px;
+    }
+  }
+  .Collapse {
+    display: flex;
+    flex-direction: column;
+  }
+  .Collapsed {
+    border-radius: 6px;
+    padding: 12px 8px;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.4) inset;
+  }
+  .Subtasks {
+    display: flex;
+    row-gap: 12px;
+    flex-direction: column;
+    & > button:last-child {
+      align-self: flex-end;
+    }
+  }
+}

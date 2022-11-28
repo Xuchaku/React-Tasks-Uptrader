@@ -1,5 +1,7 @@
 import ISubtask from "../ISubtask/ISubtask";
 import IComment from "../IComment/IComment";
+import Stage from "../Stage/Stage";
+import Priority from "../Priority/Priority";
 type ITask = {
   id: string;
   indexNumber: number;
@@ -8,9 +10,9 @@ type ITask = {
   createAt: Date;
   timeWork: number;
   endDate: Date;
-  priority: "high" | "medium" | "low";
+  priority: Priority;
   files: string[];
-  status: "queue" | "development" | "done";
+  status: Stage;
   comments: IComment[];
   subtasks: ISubtask[];
 };

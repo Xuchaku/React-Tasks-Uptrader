@@ -1,0 +1,24 @@
+.ContainerTextArea {
+  width: 100%;
+}
+.TextArea {
+  padding: 18px 16px;
+  background-color: white;
+  color: black;
+  border: none;
+  width: 100% !important;
+  min-width: 400px;
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.4) inset;
+  border-radius: 4px;
+  // font-family: @family-headers;
+  outline: none;
+  font-size: 18px;
+}
+.Error {
+  border-bottom: 2px solid red;
+}
+.TextArea + p {
+  color: red;
+  font-size: 12px;
+  // font-family: @family-body-text;
+}
