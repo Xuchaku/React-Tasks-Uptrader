@@ -4,6 +4,7 @@ import Stage from "../../types/Stage/Stage";
 import styles from "./Radios.module.scss";
 
 type RadiosTypeProps = {
+  label: string;
   onChange: (value: string) => void;
   variants: { view: JSX.Element; value: Stage | Priority }[];
   name: string;
@@ -11,6 +12,7 @@ type RadiosTypeProps = {
 };
 
 const Radios = ({
+  label,
   variants,
   name,
   onChange,
@@ -26,6 +28,7 @@ const Radios = ({
   }
   return (
     <div className={styles.Radios}>
+      <span>{label}</span>
       {variants.map((variant, index) => {
         const id = Math.random().toString();
         return (

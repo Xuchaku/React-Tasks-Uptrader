@@ -4,6 +4,8 @@ import produce from "immer";
 import Stage from "../../types/Stage/Stage";
 import ITask from "../../types/ITask/ITask";
 import ITasks from "../../types/ITasks/ITasks";
+import IComment from "../../types/IComment/IComment";
+import ISubtask from "./../../types/ISubtask/ISubtask";
 
 type ProjectsStore = {
   projects: IProject[];
@@ -13,6 +15,10 @@ enum ActionTypes {
   MOVE_TASK,
   ADD_TASK,
   PUT_TASK,
+  ADD_COMMENT,
+  SUB_ADD_COMMENT,
+  ADD_SUBTASK,
+  ADD_FILES,
 }
 
 type TaskMoveAction = {
@@ -34,8 +40,46 @@ type TaskPutAction = {
   type: ActionTypes.PUT_TASK;
   payload: { task: ITask; idProject: string; idTask: string };
 };
+type CommentAddAction = {
+  type: ActionTypes.ADD_COMMENT;
+  payload: { comment: IComment; idProject: string; task: ITask };
+};
 
-type TaskAction = TaskMoveAction | TaskAddAction | TaskPutAction;
+type SubCommentAddAction = {
+  type: ActionTypes.SUB_ADD_COMMENT;
+  payload: {
+    idProject: string;
+    task: ITask;
+    idComment: string;
+    comment: IComment;
+  };
+};
+
+type SubTaskAddAction = {
+  type: ActionTypes.ADD_SUBTASK;
+  payload: {
+    idProject: string;
+    task: ITask;
+    subtask: ISubtask;
+  };
+};
+
+type FilesAddAction = {
+  type: ActionTypes.ADD_FILES;
+  payload: {
+    idProject: string;
+    task: ITask;
+    files: string[];
+  };
+};
+type TaskAction =
+  | TaskMoveAction
+  | TaskAddAction
+  | TaskPutAction
+  | CommentAddAction
+  | SubCommentAddAction
+  | SubTaskAddAction
+  | FilesAddAction;
 
 export const setTaskById = (
   idProject: string,
@@ -75,6 +119,50 @@ export const setNewTask = (idProject: string, task: ITask): TaskAction => {
   return { type: ActionTypes.ADD_TASK, payload: { task, idProject } };
 };
 
+export const setNewComment = (
+  idProject: string,
+  task: ITask,
+  comment: IComment
+): TaskAction => {
+  return {
+    type: ActionTypes.ADD_COMMENT,
+    payload: { comment, idProject, task },
+  };
+};
+
+export const setNewSubComment = (
+  idProject: string,
+  task: ITask,
+  idComment: string,
+  comment: IComment
+): TaskAction => {
+  return {
+    type: ActionTypes.SUB_ADD_COMMENT,
+    payload: { comment, idProject, idComment, task },
+  };
+};
+
+export const setNewSubtask = (
+  idProject: string,
+  task: ITask,
+  subtask: ISubtask
+): TaskAction => {
+  return {
+    type: ActionTypes.ADD_SUBTASK,
+    payload: { idProject, task, subtask },
+  };
+};
+
+export const setNewFiles = (
+  idProject: string,
+  task: ITask,
+  files: string[]
+): TaskAction => {
+  return {
+    type: ActionTypes.ADD_FILES,
+    payload: { idProject, task, files },
+  };
+};
 const initialState: ProjectsStore = {
   projects: [
     {
@@ -109,16 +197,19 @@ const initialState: ProjectsStore = {
             ],
             comments: [
               {
+                id: uuidv4(),
                 name: "Julia",
                 text: "Some comments lalala",
                 createAt: new Date(),
                 subComments: [
                   {
+                    id: uuidv4(),
                     name: "Julia",
                     text: "Some comments lalala",
                     createAt: new Date(),
                     subComments: [
                       {
+                        id: uuidv4(),
                         name: "Julia",
                         text: "Some comments lalala",
                         createAt: new Date(),
@@ -127,6 +218,7 @@ const initialState: ProjectsStore = {
                     ],
                   },
                   {
+                    id: uuidv4(),
                     name: "Julia",
                     text: "Some comments lalala",
                     createAt: new Date(),
@@ -212,6 +304,7 @@ function projectsReducer(
           const targetIndexTask = fromIndexTask;
           if (targetTask) {
             tasks[fromColumnId].splice(targetIndexTask, 1);
+            targetTask.status = toColumnId;
             tasks[toColumnId].splice(toIndexTask, 0, targetTask);
           }
         }
@@ -221,7 +314,7 @@ function projectsReducer(
     case ActionTypes.ADD_TASK: {
       const nextState = produce(state, (draft) => {
         const { task: newTask, idProject } = action.payload;
-        const targetProject = state.projects.find(
+        const targetProject = draft.projects.find(
           (project) => project.id == idProject
         );
         if (targetProject) {
@@ -254,6 +347,88 @@ function projectsReducer(
 
               break;
             }
+          }
+        }
+      });
+      return nextState;
+    }
+    case ActionTypes.ADD_COMMENT: {
+      const nextState = produce(state, (draft) => {
+        console.log("it");
+        const { comment, idProject, task } = action.payload;
+        const targetProject = draft.projects.find(
+          (project) => project.id == idProject
+        );
+        if (targetProject) {
+          const targetTask = targetProject.tasks[task.status].find(
+            (curTask) => curTask.id == task.id
+          );
+          if (targetTask) {
+            targetTask.comments.push(comment);
+          }
+        }
+      });
+      return nextState;
+    }
+
+    case ActionTypes.SUB_ADD_COMMENT: {
+      const nextState = produce(state, (draft) => {
+        const { comment, idProject, idComment, task } = action.payload;
+        const targetProject = draft.projects.find(
+          (project) => project.id == idProject
+        );
+        if (targetProject) {
+          const targetTask = targetProject.tasks[task.status].find(
+            (curTask) => curTask.id == task.id
+          );
+          if (targetTask) {
+            const { comments } = targetTask;
+            const queue = [...comments];
+            while (queue.length > 0) {
+              const firstComment = queue[0];
+              if (firstComment.id == idComment) {
+                firstComment.subComments.push(comment);
+                break;
+              } else {
+                queue.push(...firstComment.subComments);
+              }
+              queue.shift();
+            }
+          }
+        }
+      });
+      return nextState;
+    }
+    case ActionTypes.ADD_SUBTASK: {
+      const nextState = produce(state, (draft) => {
+        const { idProject, task, subtask } = action.payload;
+        const targetProject = draft.projects.find(
+          (project) => project.id == idProject
+        );
+        if (targetProject) {
+          const targetTask = targetProject.tasks[task.status].find(
+            (curTask) => curTask.id == task.id
+          );
+          if (targetTask) {
+            targetTask.subtasks.push(subtask);
+          }
+        }
+      });
+
+      return nextState;
+    }
+    case ActionTypes.ADD_FILES: {
+      const nextState = produce(state, (draft) => {
+        const { idProject, task, files } = action.payload;
+        const targetProject = draft.projects.find(
+          (project) => project.id == idProject
+        );
+        if (targetProject) {
+          const targetTask = targetProject.tasks[task.status].find(
+            (curTask) => curTask.id == task.id
+          );
+          if (targetTask) {
+            targetTask.files.push(...files);
           }
         }
       });

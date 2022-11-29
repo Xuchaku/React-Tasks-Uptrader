@@ -1,61 +1,39 @@
 import React, { useState } from "react";
-import dayjs from "dayjs";
+import styles from "./FormSubtask.module.scss";
+import ISubtask from "./../../types/ISubtask/ISubtask";
 import {
-  classes,
-  initNewTask,
+  initNewSubTask,
   isValidDate,
   isValidText,
   parseDate,
 } from "../../utils";
-import { ReactComponent as FileSvg } from "./../../assets/svgs/file-svgrepo-com.svg";
-import Button from "../../UI/Button/Button";
-import TextArea from "../../UI/TextArea/TextArea";
-import InputFile from "../../UI/InputFile/InputFile";
 import Input from "../../UI/Input/Input";
-import styles from "./FormTask.module.scss";
-import ITask from "../../types/ITask/ITask";
 import Radios from "../../UI/Radios/Radios";
 import { priorityRadios, statusRadios } from "../../constants";
-import File from "../File/File";
+import dayjs from "dayjs";
+import TextArea from "../../UI/TextArea/TextArea";
+import Button from "../../UI/Button/Button";
 
-type FormTaskPropsType = {
-  addTask: (todo: ITask) => void;
-  targetTask: ITask | null;
-  changeTask: (id: string, changedTask: ITask) => void;
+type FormSubtaskPropsType = {
+  addSubtask: (subtask: ISubtask) => void;
 };
 
-const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
-  const [task, setTask] = useState(targetTask || initNewTask());
+const FormSubtask = ({ addSubtask }: FormSubtaskPropsType) => {
+  const [subtask, setSubtask] = useState(initNewSubTask());
   const [preDateStartString, setPreDateStartString] = useState(
-    dayjs(task.createAt).format("YYYY.MM.DD")
+    dayjs(subtask.createAt).format("YYYY.MM.DD")
+  );
+  const [preDateEndString, setPreDateEndString] = useState(
+    dayjs(subtask.endDate).format("YYYY.MM.DD")
   );
 
   function submitForm(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (targetTask) {
-      changeTask(task.id, task);
-    } else {
-      addTask(task);
-    }
+    addSubtask(subtask);
   }
-  const [preDateEndString, setPreDateEndString] = useState(
-    dayjs(task.endDate).format("YYYY.MM.DD")
-  );
-
-  function changeFieldText(field: keyof ITask) {
+  function changeFieldText(field: keyof ISubtask) {
     return function (value: string) {
-      setTask({ ...task, [field]: value });
-    };
-  }
-  function changeFieldFiles(field: "files") {
-    return function (value: string[]) {
-      setTask({ ...task, [field]: [...task.files, ...value] });
-    };
-  }
-  function deleteFile(fileName: string) {
-    return function () {
-      const filteredFiles = [...task.files].filter((file) => file != fileName);
-      setTask({ ...task, files: filteredFiles });
+      setSubtask({ ...subtask, [field]: value });
     };
   }
   function changeFieldDateAsString(
@@ -66,18 +44,18 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
       set(value);
       if (isValidDate(value)) {
         const { year, month, day } = parseDate(value);
-        setTask({ ...task, [fieldDate]: new Date(year, month - 1, day) });
+        setSubtask({ ...subtask, [fieldDate]: new Date(year, month - 1, day) });
       }
     };
   }
   return (
-    <form onSubmit={submitForm} className={styles.FormTodo}>
+    <form onSubmit={submitForm} className={styles.Form}>
       <div className={styles.FormElement}>
         <Input
           label={"Название"}
           placeholder={"Введите название задачи"}
           type={"text"}
-          value={task.title}
+          value={subtask.title}
           onChange={changeFieldText("title")}
           onBlur={isValidText}
         ></Input>
@@ -85,7 +63,7 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
       <div className={styles.FormElement}>
         <Radios
           label="Приоритет"
-          initialValue={task.priority}
+          initialValue={subtask.priority}
           onChange={changeFieldText("priority")}
           name="priority"
           variants={priorityRadios}
@@ -94,7 +72,7 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
       <div className={styles.FormElement}>
         <Radios
           label="Статус"
-          initialValue={task.status}
+          initialValue={subtask.status}
           onChange={changeFieldText("status")}
           name="status"
           variants={statusRadios}
@@ -128,21 +106,10 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
         <TextArea
           label={"Описание"}
           placeholder={"Введите описание"}
-          value={task.description}
+          value={subtask.description}
           onChange={changeFieldText("description")}
           onBlur={isValidText}
         ></TextArea>
-      </div>
-
-      <div className={classes(styles.FormElement, styles.Files)}>
-        {task.files.map((file) => {
-          return (
-            <div className={styles.File}>
-              <File name={file} icon={FileSvg} action={deleteFile(file)}></File>
-            </div>
-          );
-        })}
-        <InputFile uploadFile={changeFieldFiles("files")}></InputFile>
       </div>
 
       <Button type="submit">Сохранить</Button>
@@ -150,4 +117,4 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
   );
 };
 
-export default FormTask;
+export default FormSubtask;

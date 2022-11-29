@@ -3,6 +3,8 @@
   padding: 24px 16px;
   border-radius: 4px;
   margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
   border: 1px solid $bg-main-ui;
   box-shadow: rgb(0 0 0 / 20%) 0px 2px 1px -1px,
     rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px;
@@ -71,11 +73,24 @@
   .Collapse {
     display: flex;
     flex-direction: column;
+    align-self: flex-start;
   }
   .Collapsed {
     border-radius: 6px;
-    padding: 12px 8px;
+    padding: 8px 8px;
+    margin-bottom: 24px;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.4) inset;
+    .Comments {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      & > svg {
+        width: 60px;
+        height: 60px;
+        fill: $bg-main-ui;
+        margin: auto;
+      }
+    }
   }
   .Subtasks {
     display: flex;

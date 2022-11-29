@@ -1,10 +1,11 @@
-import React, { ChangeEvent, forwardRef, useState } from "react";
+import React, { ChangeEvent, forwardRef, useId, useState } from "react";
 import { FocusEvent } from "react";
 import { classes } from "../../utils";
 
 import styles from "./Input.module.scss";
 
 type InputTypeProps = {
+  label: string;
   value: string;
   type: string;
   onChange: (value: string) => void;
@@ -22,11 +23,12 @@ const Input = forwardRef<HTMLInputElement, InputTypeProps>(
       onBlur,
       placeholder,
       messageError = "Поле не должно быть пустым",
+      label,
     },
     ref
   ) => {
     const [isValidSelf, setIsValidSelf] = useState(true);
-
+    const id = useId();
     const extendClasses = isValidSelf
       ? [styles.Input]
       : [styles.Input, styles.Error];
@@ -48,7 +50,9 @@ const Input = forwardRef<HTMLInputElement, InputTypeProps>(
 
     return (
       <div className={styles.ContainerInput}>
+        <label htmlFor={id}>{label}</label>
         <input
+          id={id}
           placeholder={placeholder}
           className={classes(...extendClasses)}
           ref={ref}

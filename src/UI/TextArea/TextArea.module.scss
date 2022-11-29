@@ -1,5 +1,16 @@
 .ContainerTextArea {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  label {
+    align-self: flex-start;
+    position: absolute;
+    padding: 0 6px;
+    background-color: white;
+    transform: translateY(-50%);
+    left: 12px;
+  }
 }
 .TextArea {
   padding: 18px 16px;

@@ -5,23 +5,47 @@ import styles from "./Comment.module.scss";
 import dayjs from "dayjs";
 import Button from "../../UI/Button/Button";
 import { AnimatePresence, motion } from "framer-motion";
+import Input from "../../UI/Input/Input";
+import CommentForm from "../CommentForm/CommentForm";
+import ITask from "../../types/ITask/ITask";
 
 type CommentTypeProps = {
   comment: IComment;
   isTop?: boolean;
+  level: number;
+  task: ITask;
+  selectTargetComment: (comment: IComment, task: ITask) => void;
+  // openFormComment: (task: ITask, idComment: string) => void;
 };
 
-const Comment = ({ comment, isTop = false }: CommentTypeProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+const Comment = ({
+  comment,
+  isTop = false,
+  level,
+  task,
+  selectTargetComment,
+}: // openFormComment,
+CommentTypeProps) => {
+  const [isCollapsedSubcomments, setIsCollapsedSubcomments] = useState(true);
+  // const [isCollapsedInput, setIsCollapsedInput] = useState(true);
   const { name, text, createAt, subComments } = comment;
-  function toggleCollapse() {
-    setIsCollapsed(!isCollapsed);
+  function toggleCollapseSubcomments() {
+    setIsCollapsedSubcomments(!isCollapsedSubcomments);
   }
+  function openModalFormComment() {
+    selectTargetComment(comment, task);
+  }
+  // function openModalFormComment() {
+  //   openFormComment(task, comment.id);
+  // }
+  // function toggleCollapseInput() {
+  //   setIsCollapsedInput(!isCollapsedInput);
+  // }
   return (
     <>
       <motion.div
         className={styles.Comment}
-        style={{ overflow: "hidden" }}
+        style={{ overflow: "hidden", marginLeft: level * 16 }}
         initial={{ opacity: isTop ? 1 : 0, height: isTop ? "auto" : 0 }}
         animate={{ opacity: 1, height: "auto" }}
         exit={{ opacity: 0, height: 0 }}
@@ -35,16 +59,29 @@ const Comment = ({ comment, isTop = false }: CommentTypeProps) => {
           <p>{text}</p>
           <div className={styles.Actions}>
             <Button
-              onClick={toggleCollapse}
+              variant={"text"}
+              onClick={toggleCollapseSubcomments}
             >{`${subComments.length} комментариев`}</Button>
-            <Button>Ответить</Button>
+            <Button onClick={openModalFormComment} variant={"text"}>
+              Ответить
+            </Button>
           </div>
+          {/* <AnimatePresence initial={false}>
+           {!isCollapsedInput && <CommentForm></CommentForm>}
+          </AnimatePresence> */}
         </div>
       </motion.div>
       <AnimatePresence initial={false}>
-        {!isCollapsed &&
+        {!isCollapsedSubcomments &&
           subComments.map((subcomment) => {
-            return <Comment comment={subcomment}></Comment>;
+            return (
+              <Comment
+                selectTargetComment={selectTargetComment}
+                task={task}
+                level={level + 1}
+                comment={subcomment}
+              ></Comment>
+            );
           })}
       </AnimatePresence>
     </>

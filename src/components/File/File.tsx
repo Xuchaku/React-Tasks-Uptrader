@@ -1,6 +1,7 @@
 import React, { FunctionComponent, SVGProps } from "react";
 import styles from "./Custom.module.scss";
 import { ReactComponent as DeleteSvg } from "./../../assets/svgs/delete-svgrepo-com.svg";
+import { AnimatePresence, motion } from "framer-motion";
 
 type FilePropsType = {
   name: string;
@@ -9,15 +10,18 @@ type FilePropsType = {
 };
 
 const File = ({ name, icon: Svg, action = undefined }: FilePropsType) => {
-  console.log(styles);
   return (
-    <div className={styles.File}>
+    <motion.div
+      initial={{ scale: 0.2 }}
+      animate={{ scale: 1 }}
+      className={styles.File}
+    >
       <Svg></Svg>
       <div>{name}</div>
       {action && (
         <DeleteSvg style={{ cursor: "pointer" }} onClick={action}></DeleteSvg>
       )}
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import ITask from "../types/ITask/ITask";
 import { v4 as uuidv4 } from "uuid";
+import IComment from "../types/IComment/IComment";
+import ISubtask from "../types/ISubtask/ISubtask";
 
 export const isValidText = function (value: string) {
   return !!value;
@@ -34,5 +36,29 @@ export const initNewTask = (): ITask => {
     status: "queue",
     comments: [],
     subtasks: [],
+  };
+};
+
+export const initNewSubTask = (): ISubtask => {
+  return {
+    id: uuidv4(),
+    indexNumber: 0,
+    title: "",
+    description: "",
+    createAt: new Date(),
+    timeWork: 0,
+    endDate: new Date(),
+    priority: "low",
+    status: "queue",
+  };
+};
+
+export const initNewComment = (): IComment => {
+  return {
+    id: uuidv4(),
+    name: "",
+    text: "",
+    createAt: new Date(),
+    subComments: [],
   };
 };

@@ -1,0 +1,9 @@
+.Form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+  button {
+    align-self: flex-start;
+    width: 100px;
+  }
+}

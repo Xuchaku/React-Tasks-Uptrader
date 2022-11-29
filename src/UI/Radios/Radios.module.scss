@@ -1,8 +1,21 @@
 .Radios {
   display: flex;
   flex-direction: row;
+  position: relative;
   column-gap: 16px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 4px;
   align-items: center;
+  span {
+    position: absolute;
+    top: 0;
+    display: block;
+    background-color: white;
+    padding: 0 6px;
+    transform: translateY(-50%);
+    left: 12px;
+  }
   input {
     display: none;
   }

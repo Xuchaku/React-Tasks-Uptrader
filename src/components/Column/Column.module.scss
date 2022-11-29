@@ -2,6 +2,9 @@
 .WrapperColumn {
   background-color: $bg-theme;
   height: auto;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
   width: 100%;
   border-radius: 4px;
   & > h1 {

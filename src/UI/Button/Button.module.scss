@@ -1,3 +1,4 @@
+@import "./../../global/style.scss";
 .Button {
   text-align: center;
   padding: 12px 6px;
@@ -6,4 +7,25 @@
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
+}
+.text {
+  background-color: transparent;
+  color: $bg-main-ui;
+  &:hover {
+    text-decoration: underline;
+  }
+  & > svg {
+    fill: $bg-main-ui;
+    margin-left: 6px;
+  }
+}
+.contained {
+  color: white;
+  background-color: $bg-main-ui;
+}
+
+.outlined {
+  border: 1px solid $bg-main-ui;
+  color: $bg-main-ui;
+  background-color: transparent;
 }
