@@ -1,7 +1,30 @@
+@font-face {
+  font-family: "Inter";
+  src: url("./../assets/fonts/Inter-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Fira Sans";
+  src: url("./../assets/fonts/FiraSans-Regular.ttf");
+}
+
+$family-headers: "Inter";
+$family-body-text: "Fira Sans";
+
+$font-dark-color: #3a3636;
+$font-gray-color: #8f8f8f;
+
+@mixin header($color, $size) {
+  font-family: $family-headers;
+  color: $color;
+  font-size: $size;
+}
+
+@mixin text($color, $size) {
+  font-family: $family-body-text;
+  color: $color;
+  font-size: $size;
+}
+
 $bg-theme: #e7ebf0;
 $bg-main-ui: #663399;
-
-%links {
-  color: #663399;
-  text-decoration: none;
-}

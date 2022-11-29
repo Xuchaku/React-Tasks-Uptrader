@@ -11,7 +11,7 @@
     text-align: center;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
-    color: white;
+    @include header(white, 36px);
   }
   h1:first-child:after {
     content: "";

@@ -1,10 +1,11 @@
+@import "./../../global/style.scss";
 .Tasks {
   position: absolute;
   padding: 2em;
 }
 .Back {
   a {
-    color: white;
+    @include header(white, 36px);
     text-decoration: none;
   }
 }

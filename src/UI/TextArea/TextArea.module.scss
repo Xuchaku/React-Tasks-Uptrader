@@ -1,3 +1,4 @@
+@import "./../../global/style.scss";
 .ContainerTextArea {
   width: 100%;
   display: flex;
@@ -10,6 +11,7 @@
     background-color: white;
     transform: translateY(-50%);
     left: 12px;
+    @include text($font-dark-color, 14px);
   }
 }
 .TextArea {
@@ -21,7 +23,7 @@
   min-width: 400px;
   box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.4) inset;
   border-radius: 4px;
-  // font-family: @family-headers;
+  @include text($font-dark-color, 14px);
   outline: none;
   font-size: 18px;
 }

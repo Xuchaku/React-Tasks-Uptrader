@@ -17,7 +17,7 @@ const File = ({ name, icon: Svg, action = undefined }: FilePropsType) => {
       className={styles.File}
     >
       <Svg></Svg>
-      <div>{name}</div>
+      <span>{name}</span>
       {action && (
         <DeleteSvg style={{ cursor: "pointer" }} onClick={action}></DeleteSvg>
       )}

@@ -1,3 +1,4 @@
+@import "./../../global/style.scss";
 .Subtask {
   padding: 12px 10px;
 
@@ -15,6 +16,7 @@
     .Main {
       display: flex;
       align-items: center;
+      @include header($font-dark-color, 16px);
       .Priority {
         display: flex;
         flex-direction: row;
@@ -36,6 +38,7 @@
   }
   .Date {
     margin-bottom: 6px;
+    @include text($font-gray-color, 18px);
   }
 
   .Meta {
@@ -45,13 +48,16 @@
       display: flex;
       flex-direction: row;
       column-gap: 8px;
+      @include text($font-dark-color, 18px);
       svg {
-        width: 18px;
-        height: 18px;
+        fill: $font-dark-color;
+        width: 22px;
+        height: 22px;
       }
     }
   }
   .Description {
     margin-bottom: 24px;
+    @include text($font-dark-color, 18px);
   }
 }

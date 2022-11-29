@@ -1,3 +1,4 @@
+@import "./../../global/style.scss";
 .Comment {
   display: flex;
   flex-direction: row;
@@ -13,6 +14,15 @@
   }
   .Content {
     width: 100%;
+    h2 {
+      @include text($font-dark-color, 24px);
+    }
+    span {
+      @include text($font-gray-color, 16px);
+    }
+    p {
+      @include text($font-dark-color, 18px);
+    }
   }
   .Actions {
     display: flex;

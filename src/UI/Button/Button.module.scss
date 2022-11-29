@@ -10,7 +10,8 @@
 }
 .text {
   background-color: transparent;
-  color: $bg-main-ui;
+
+  @include text($bg-main-ui, 16px);
   &:hover {
     text-decoration: underline;
   }
@@ -22,6 +23,7 @@
 .contained {
   color: white;
   background-color: $bg-main-ui;
+  @include text(white, 16px);
 }
 
 .outlined {

@@ -25,19 +25,23 @@
     .Main {
       display: flex;
       align-items: center;
+      h2 {
+        @include header($font-dark-color, 36px);
+      }
       .Priority {
         display: flex;
         flex-direction: row;
         margin-left: 16px;
         svg {
-          width: 32px;
-          height: 32px;
+          width: 36px;
+          height: 36px;
         }
       }
     }
   }
   .Date {
     margin-bottom: 6px;
+    @include text($font-gray-color, 18px);
   }
 
   .Meta {
@@ -48,17 +52,23 @@
       flex-direction: row;
       align-items: center;
       column-gap: 4px;
+      @include text($font-dark-color, 20px);
       svg {
-        width: 18px;
-        height: 18px;
+        fill: $font-dark-color;
+        width: 26px;
+        height: 26px;
       }
     }
   }
   .Description {
     margin-bottom: 24px;
+    @include text($font-dark-color, 18px);
   }
   .Collapse {
     margin-bottom: 16px;
+    button > span {
+      @include text($bg-main-ui, 18px);
+    }
   }
 
   .Files {

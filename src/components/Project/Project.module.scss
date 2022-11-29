@@ -1,4 +1,7 @@
 @import "./../../global/style.scss";
+a {
+  text-decoration: none;
+}
 .Project {
   background-color: white;
   padding: 36px 24px;
@@ -15,8 +18,9 @@
   }
   h1 {
     margin-bottom: 48px;
+    @include header($font-dark-color, 36px);
   }
   & > a {
-    @extend %links;
+    @include text($bg-main-ui, 16px);
   }
 }
