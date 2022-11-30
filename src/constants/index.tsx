@@ -1,7 +1,7 @@
-import Priority from "../types/Priority/Priority";
 import Stage from "./../types/Stage/Stage";
 
 import { ReactComponent as PrioritySvg } from "./../assets/svgs/fire-svgrepo-com.svg";
+import Priority from "./../types/Priority/Priority";
 
 export const hashTablePriority = {
   high: { text: "Высокий приоритет", num: 3 },
@@ -29,6 +29,23 @@ export const priorityRadios: { view: JSX.Element; value: Priority }[] = [
     value: "high",
   },
 ];
+
+export const prioritySvgs: { [key: string]: JSX.Element } = {
+  low: <PrioritySvg></PrioritySvg>,
+  medium: (
+    <>
+      <PrioritySvg></PrioritySvg>
+      <PrioritySvg></PrioritySvg>
+    </>
+  ),
+  high: (
+    <>
+      <PrioritySvg></PrioritySvg>
+      <PrioritySvg></PrioritySvg>
+      <PrioritySvg></PrioritySvg>
+    </>
+  ),
+};
 
 export const statusRadios: { view: JSX.Element; value: Stage }[] = [
   {

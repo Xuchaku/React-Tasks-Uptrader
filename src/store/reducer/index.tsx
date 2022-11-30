@@ -6,20 +6,71 @@ import ITask from "../../types/ITask/ITask";
 import ITasks from "../../types/ITasks/ITasks";
 import IComment from "../../types/IComment/IComment";
 import ISubtask from "./../../types/ISubtask/ISubtask";
+import { Firestore } from "@firebase/firestore";
 
 type ProjectsStore = {
+  isLoading: boolean;
   projects: IProject[];
 };
 
-enum ActionTypes {
-  MOVE_TASK,
-  ADD_TASK,
-  PUT_TASK,
-  ADD_COMMENT,
-  SUB_ADD_COMMENT,
-  ADD_SUBTASK,
-  ADD_FILES,
+export enum ActionTypes {
+  MOVE_TASK = "MOVE_TASK",
+  ADD_TASK = "ADD_TASK",
+  PUT_TASK = "PUT_TASK",
+  ADD_COMMENT = "ADD_COMMENT",
+  SUB_ADD_COMMENT = "SUB_ADD_COMMENT",
+  ADD_SUBTASK = "ADD_SUBTASK",
+  ADD_FILES = "ADD_FILES",
+  FETCH_PROJECTS = "FETCH_PROJECTS",
+  SET_FAIL = "SET_FAIL",
+  SET_PROJECTS = "SET_PROJECTS",
+  SET_LOAD = "SET_LOAD",
+  UPDATE_PROJECT = "UPDATE_PROJECT",
+  INIT_PROJECT_BACK = "INIT_PROJECT_BACK",
 }
+
+export type FetchInitProjectAction = {
+  type: ActionTypes.INIT_PROJECT_BACK;
+  payload: {
+    dataBase: Firestore;
+    project: IProject;
+  };
+};
+
+export type FecthPutProjectAction = {
+  type: ActionTypes.UPDATE_PROJECT;
+  payload: {
+    dataBase: Firestore;
+    idProject: string;
+  };
+};
+type FetchStatusAction = {
+  type: ActionTypes.SET_LOAD;
+  payload: {
+    status: boolean;
+  };
+};
+
+export type FetchProjectsAction = {
+  type: ActionTypes.FETCH_PROJECTS;
+  payload: {
+    dataBase: Firestore;
+  };
+};
+
+type LoadFailAction = {
+  type: ActionTypes.SET_FAIL;
+  payload: {
+    message: string;
+  };
+};
+
+type ProjectInitAction = {
+  type: ActionTypes.SET_PROJECTS;
+  payload: {
+    projects: IProject[];
+  };
+};
 
 type TaskMoveAction = {
   type: ActionTypes.MOVE_TASK;
@@ -72,14 +123,77 @@ type FilesAddAction = {
     files: string[];
   };
 };
-type TaskAction =
+export type TaskAction =
   | TaskMoveAction
   | TaskAddAction
   | TaskPutAction
   | CommentAddAction
   | SubCommentAddAction
   | SubTaskAddAction
-  | FilesAddAction;
+  | FilesAddAction
+  | FetchProjectsAction
+  | ProjectInitAction
+  | LoadFailAction
+  | FetchStatusAction
+  | FecthPutProjectAction
+  | FetchInitProjectAction;
+
+export const fetchInitProjectBack = (
+  dataBase: Firestore,
+  project: IProject
+): TaskAction => {
+  return {
+    type: ActionTypes.INIT_PROJECT_BACK,
+    payload: {
+      dataBase,
+      project,
+    },
+  };
+};
+
+export const putProjectFetch = (
+  dataBase: Firestore,
+  idProject: string
+): TaskAction => {
+  return {
+    type: ActionTypes.UPDATE_PROJECT,
+    payload: {
+      dataBase,
+      idProject,
+    },
+  };
+};
+
+export const setLoad = (status: boolean): TaskAction => {
+  return {
+    type: ActionTypes.SET_LOAD,
+    payload: { status },
+  };
+};
+export const fetchProjects = (dataBase: Firestore): TaskAction => {
+  return {
+    type: ActionTypes.FETCH_PROJECTS,
+    payload: { dataBase },
+  };
+};
+
+export const setFailLoad = (message: string): TaskAction => {
+  return {
+    type: ActionTypes.SET_FAIL,
+    payload: {
+      message,
+    },
+  };
+};
+
+export const setProjects = (projects: IProject[]): TaskAction => {
+  return {
+    type: ActionTypes.SET_PROJECTS,
+    payload: {
+      projects,
+    },
+  };
+};
 
 export const setTaskById = (
   idProject: string,
@@ -164,119 +278,330 @@ export const setNewFiles = (
   };
 };
 const initialState: ProjectsStore = {
-  projects: [
-    {
-      name: "Project 1",
-      id: uuidv4(),
-      tasks: {
-        queue: [
-          {
-            id: uuidv4(),
-            indexNumber: 0,
-            title: "Some title",
-            description:
-              "Some description Some descriptionSome descriptionSome descriptionSome descriptionSome descriptionSome descriptionSome descriptionSome descriptionSome descriptionSome description",
-            createAt: new Date(),
-            timeWork: 173,
-            endDate: new Date(),
-            priority: "high",
-            files: ["asjdf.jpg"],
-            status: "queue",
-            subtasks: [
-              {
-                id: uuidv4(),
-                title: "Subtask 1",
-                indexNumber: 0,
-                description: "some descirption subtask",
-                createAt: new Date(),
-                timeWork: 1235243,
-                endDate: new Date(),
-                priority: "high",
-                status: "queue",
-              },
-            ],
-            comments: [
-              {
-                id: uuidv4(),
-                name: "Julia",
-                text: "Some comments lalala",
-                createAt: new Date(),
-                subComments: [
-                  {
-                    id: uuidv4(),
-                    name: "Julia",
-                    text: "Some comments lalala",
-                    createAt: new Date(),
-                    subComments: [
-                      {
-                        id: uuidv4(),
-                        name: "Julia",
-                        text: "Some comments lalala",
-                        createAt: new Date(),
-                        subComments: [],
-                      },
-                    ],
-                  },
-                  {
-                    id: uuidv4(),
-                    name: "Julia",
-                    text: "Some comments lalala",
-                    createAt: new Date(),
-                    subComments: [],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-        development: [
-          {
-            id: uuidv4(),
-            indexNumber: 0,
-            title: "Some title",
-            description: "Some description",
-            createAt: new Date(),
-            timeWork: 173888,
-            endDate: new Date(),
-            priority: "high",
-            files: ["asjdf.jpg"],
-            status: "development",
-            subtasks: [],
-            comments: [],
-          },
-          {
-            id: uuidv4(),
-            indexNumber: 1,
-            title: "Some title",
-            description: "Some description",
-            createAt: new Date(),
-            timeWork: 173888,
-            endDate: new Date(),
-            priority: "high",
-            files: ["asjdf.jpg", "2333.jpg"],
-            status: "development",
-            subtasks: [],
-            comments: [],
-          },
-          {
-            id: uuidv4(),
-            indexNumber: 2,
-            title: "Some title",
-            description: "Some description",
-            createAt: new Date(),
-            timeWork: 1738880000,
-            endDate: new Date(),
-            priority: "high",
-            files: [],
-            status: "development",
-            subtasks: [],
-            comments: [],
-          },
-        ],
-        done: [],
-      },
-    },
-  ],
+  isLoading: false,
+  projects: [],
+  // projects: [
+  //   {
+  //     name: "Проект 1",
+  //     id: uuidv4(),
+  //     tasks: {
+  //       queue: [
+  //         {
+  //           id: uuidv4(),
+  //           indexNumber: 0,
+  //           title: "Подключить Typescript",
+  //           description:
+  //             "Подключить технологию чтобы все работало исправно. Проверить все, подключиться к базе, сходить погулять.",
+  //           createAt: new Date(),
+  //           timeWork: 1700000,
+  //           endDate: new Date(),
+  //           priority: "medium",
+  //           files: ["ts.ts", "com.com", "life.png"],
+  //           status: "queue",
+  //           subtasks: [
+  //             {
+  //               id: uuidv4(),
+  //               title: "Подключить jquery",
+  //               indexNumber: 1,
+  //               description:
+  //                 "Подключить устаревшую технологию для оживления страницы",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "high",
+  //               status: "queue",
+  //             },
+  //             {
+  //               id: uuidv4(),
+  //               title: "Подключить angular",
+  //               indexNumber: 2,
+  //               description:
+  //                 "Подключить новую технологию для оживления страницы",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "medium",
+  //               status: "development",
+  //             },
+  //           ],
+  //           comments: [
+  //             {
+  //               id: uuidv4(),
+  //               name: "Вася",
+  //               text: "Я думаю что получится",
+  //               createAt: new Date(),
+  //               subComments: [
+  //                 {
+  //                   id: uuidv4(),
+  //                   name: "Юля",
+  //                   text: "Мне кажется ты не прав",
+  //                   createAt: new Date(),
+  //                   subComments: [
+  //                     {
+  //                       id: uuidv4(),
+  //                       name: "Артем",
+  //                       text: "Вася прав, ты что, проверь все сама.",
+  //                       createAt: new Date(),
+  //                       subComments: [],
+  //                     },
+  //                   ],
+  //                 },
+  //                 {
+  //                   id: uuidv4(),
+  //                   name: "Юра",
+  //                   text: "Мне кажется все у нас получится, но нужно подумать",
+  //                   createAt: new Date(),
+  //                   subComments: [],
+  //                 },
+  //               ],
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //       development: [
+  //         {
+  //           id: uuidv4(),
+  //           indexNumber: 0,
+  //           title: "Довести до ума CRM",
+  //           description:
+  //             "Добавить функции управления системой, подготовить к релизу",
+  //           createAt: new Date(),
+  //           timeWork: 173888,
+  //           endDate: new Date(),
+  //           priority: "high",
+  //           files: ["relise.jpg", "font.png"],
+  //           status: "development",
+  //           subtasks: [
+  //             {
+  //               id: uuidv4(),
+  //               title: "Переделать админку",
+  //               indexNumber: 1,
+  //               description: "Переписать на другую технологию",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "medium",
+  //               status: "queue",
+  //             },
+  //             {
+  //               id: uuidv4(),
+  //               title: "Протестировать систему",
+  //               indexNumber: 2,
+  //               description: "Добавить тесты на Jest",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "high",
+  //               status: "queue",
+  //             },
+  //           ],
+  //           comments: [
+  //             {
+  //               id: uuidv4(),
+  //               name: "Вася",
+  //               text: "Я уже посмотрел CRM систему, можно работаьь",
+  //               createAt: new Date(),
+  //               subComments: [
+  //                 {
+  //                   id: uuidv4(),
+  //                   name: "Юля",
+  //                   text: "Да мы готовы к работе",
+  //                   createAt: new Date(),
+  //                   subComments: [],
+  //                 },
+  //               ],
+  //             },
+  //             {
+  //               id: uuidv4(),
+  //               name: "Юра",
+  //               text: "Добавил несколько тестов, проверяйте",
+  //               createAt: new Date(),
+  //               subComments: [
+  //                 {
+  //                   id: uuidv4(),
+  //                   name: "Вася",
+  //                   text: "Вроде работает, продолжай",
+  //                   createAt: new Date(),
+  //                   subComments: [],
+  //                 },
+  //               ],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           id: uuidv4(),
+  //           indexNumber: 1,
+  //           title: "Сходить на встречу разработчиков",
+  //           description:
+  //             "В эту субботу будет встреча разработчиков, будем делиться опытом",
+  //           createAt: new Date(),
+  //           timeWork: 173888,
+  //           endDate: new Date(),
+  //           priority: "low",
+  //           files: ["photo.jpg", "sheme.ttx"],
+  //           status: "development",
+  //           subtasks: [
+  //             {
+  //               id: uuidv4(),
+  //               title: "Захватить ноутбук",
+  //               indexNumber: 1,
+  //               description:
+  //                 "Возможно потребуется ноутбук для описания системы",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "low",
+  //               status: "development",
+  //             },
+  //           ],
+  //           comments: [
+  //             {
+  //               id: uuidv4(),
+  //               name: "Вася",
+  //               text: "Конечно приду, будет интересно",
+  //               createAt: new Date(),
+  //               subComments: [],
+  //             },
+  //             {
+  //               id: uuidv4(),
+  //               name: "Маша",
+  //               text: "Будет весело приходите, удачи",
+  //               createAt: new Date(),
+  //               subComments: [],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           id: uuidv4(),
+  //           indexNumber: 2,
+  //           title: "Добавить метрики Google на сайт",
+  //           description: "Разобраться в API google, подключить скрипты",
+  //           createAt: new Date(),
+  //           timeWork: 1738880000,
+  //           endDate: new Date(),
+  //           priority: "high",
+  //           files: ["metric.json", "google.tsx"],
+  //           status: "development",
+  //           subtasks: [
+  //             {
+  //               id: uuidv4(),
+  //               title: "Добавить Firebase к проекту",
+  //               indexNumber: 1,
+  //               description:
+  //                 "Подключить систему к Firebase для доступа к google",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "high",
+  //               status: "done",
+  //             },
+  //             {
+  //               id: uuidv4(),
+  //               title: "Вывести количество просмотров сайта",
+  //               indexNumber: 2,
+  //               description:
+  //                 "Подключить библиотеку для визуализации графиков и на основе данных вывести просмотры",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "high",
+  //               status: "development",
+  //             },
+  //           ],
+  //           comments: [
+  //             {
+  //               id: uuidv4(),
+  //               name: "Юра",
+  //               text: "Задача сложная, но крутая",
+  //               createAt: new Date(),
+  //               subComments: [
+  //                 {
+  //                   id: uuidv4(),
+  //                   name: "Вася",
+  //                   text: "Мы сможем это сделать вместе",
+  //                   createAt: new Date(),
+  //                   subComments: [],
+  //                 },
+  //               ],
+  //             },
+  //             {
+  //               id: uuidv4(),
+  //               name: "Вася",
+  //               text: "Я уже почти закончил с этим",
+  //               createAt: new Date(),
+  //               subComments: [],
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //       done: [
+  //         {
+  //           id: uuidv4(),
+  //           indexNumber: 2,
+  //           title: "Задеплоить проект и настроить CI/CD",
+  //           description:
+  //             "Настроить весь цикл разработки и доставки проекта. Развернуть приложение на Vercel",
+  //           createAt: new Date(),
+  //           timeWork: 1738880000,
+  //           endDate: new Date(),
+  //           priority: "high",
+  //           files: ["vercel.json"],
+  //           status: "done",
+  //           subtasks: [
+  //             {
+  //               id: uuidv4(),
+  //               title: "Зарегистрировать проект на Vercel",
+  //               indexNumber: 1,
+  //               description:
+  //                 "Подготовить проект, очистить ненужное, отрефакторить код",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "high",
+  //               status: "done",
+  //             },
+  //             {
+  //               id: uuidv4(),
+  //               title: "Выбрать любые инструменты CI/CD",
+  //               indexNumber: 2,
+  //               description:
+  //                 "Посоветоваться с разработчиками и выбрать нужный инструментарий",
+  //               createAt: new Date(),
+  //               timeWork: 12352,
+  //               endDate: new Date(),
+  //               priority: "high",
+  //               status: "development",
+  //             },
+  //           ],
+  //           comments: [
+  //             {
+  //               id: uuidv4(),
+  //               name: "Маша",
+  //               text: "Задача сложная, но крутая",
+  //               createAt: new Date(),
+  //               subComments: [
+  //                 {
+  //                   id: uuidv4(),
+  //                   name: "Вася",
+  //                   text: "Мы сможем это сделать вместе",
+  //                   createAt: new Date(),
+  //                   subComments: [],
+  //                 },
+  //               ],
+  //             },
+  //             {
+  //               id: uuidv4(),
+  //               name: "Вася",
+  //               text: "Я уже почти закончил с этим",
+  //               createAt: new Date(),
+  //               subComments: [],
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //     },
+  //   },
+  // ],
 };
 
 function projectsReducer(
@@ -354,7 +679,6 @@ function projectsReducer(
     }
     case ActionTypes.ADD_COMMENT: {
       const nextState = produce(state, (draft) => {
-        console.log("it");
         const { comment, idProject, task } = action.payload;
         const targetProject = draft.projects.find(
           (project) => project.id == idProject
@@ -432,6 +756,22 @@ function projectsReducer(
           }
         }
       });
+      return nextState;
+    }
+    case ActionTypes.SET_PROJECTS: {
+      const nextState = produce(state, (draft) => {
+        const { projects } = action.payload;
+        draft.projects.push(...projects);
+      });
+
+      return nextState;
+    }
+    case ActionTypes.SET_LOAD: {
+      const nextState = produce(state, (draft) => {
+        const { status } = action.payload;
+        draft.isLoading = status;
+      });
+
       return nextState;
     }
     default:

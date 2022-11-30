@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, redirect, useNavigate, useParams } from "react-router-dom";
 import {
   DragDropContext,
@@ -15,6 +15,7 @@ import IProject from "../../types/IProject/IPpoject";
 import storeProjects from "../../types/storeProjects/storeProjects";
 import ITasks from "../../types/ITasks/ITasks";
 import {
+  putProjectFetch,
   setMovedTask,
   setNewComment,
   setNewFiles,
@@ -32,6 +33,7 @@ import CommentForm from "../../components/CommentForm/CommentForm";
 import IComment from "../../types/IComment/IComment";
 import FormSubtask from "../../components/FormSubtask/FormSubtask";
 import ISubtask from "./../../types/ISubtask/ISubtask";
+import { DataBaseContext } from "../../context";
 
 const containerVariants = {
   hidden: {
@@ -72,6 +74,7 @@ const Tasks = () => {
   const projects = useSelector<storeProjects, IProject[]>(
     (state) => state.projects
   );
+  const dataBase = useContext(DataBaseContext);
   const [targetTask, setTargetTask] = useState<ITask | null>(null);
   const [targetComment, setTargetComment] = useState<IComment | null>(null);
   const dispatch = useDispatch();
@@ -115,9 +118,11 @@ const Tasks = () => {
   function addSubtask(subtask: ISubtask) {
     dispatch(setNewSubtask(idProject as string, targetTask as ITask, subtask));
     setIsOpenedModalFormSubTask(false);
+    dispatch(putProjectFetch(dataBase, idProject as string));
   }
   function addFiles(files: string[]) {
     dispatch(setNewFiles(idProject as string, targetTask as ITask, files));
+    dispatch(putProjectFetch(dataBase, idProject as string));
   }
   function addComment(comment: IComment) {
     if (!targetComment) {
@@ -136,6 +141,7 @@ const Tasks = () => {
     }
     setTargetComment(null);
     setIsOpenedModalFormComment(false);
+    dispatch(putProjectFetch(dataBase, idProject as string));
   }
 
   function selectNewTask() {
@@ -148,11 +154,13 @@ const Tasks = () => {
   function addTask(task: ITask) {
     dispatch(setNewTask(idProject as string, task));
     setIsOpenedModalFormTask(false);
+    dispatch(putProjectFetch(dataBase, idProject as string));
   }
 
   function changeTask(idTask: string, task: ITask) {
     dispatch(setTaskById(idProject as string, idTask, task));
     setIsOpenedModalFormTask(false);
+    dispatch(putProjectFetch(dataBase, idProject as string));
   }
   function endDragHandler(result: DropResult, provided: ResponderProvided) {
     dispatch(
@@ -164,6 +172,7 @@ const Tasks = () => {
         result.destination?.index
       )
     );
+    dispatch(putProjectFetch(dataBase, idProject as string));
   }
 
   return (

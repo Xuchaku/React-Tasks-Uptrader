@@ -11,7 +11,7 @@ import ITask from "../../types/ITask/ITask";
 import Comment from "./../Comment/Comment";
 import dayjs from "dayjs";
 import styles from "./Task.module.scss";
-import { hashTablePriority } from "../../constants";
+import { hashTablePriority, prioritySvgs } from "../../constants";
 import Button from "../../UI/Button/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import Subtask from "../Subtask/Subtask";
@@ -92,11 +92,7 @@ const Task = ({
           <div className={styles.Header}>
             <div className={styles.Main}>
               <h2>{title}</h2>
-              <div className={styles.Priority}>
-                <PrioritySvg></PrioritySvg>
-                <PrioritySvg></PrioritySvg>
-                <PrioritySvg></PrioritySvg>
-              </div>
+              <div className={styles.Priority}>{prioritySvgs[priority]}</div>
             </div>
             <div className={styles.Svgs}>
               <EditSvg onClick={selectTaskHandler}></EditSvg>

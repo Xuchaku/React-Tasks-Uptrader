@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./Column.module.scss";
 import { Droppable } from "react-beautiful-dnd";
 import ITask from "./../../types/ITask/ITask";
@@ -7,6 +7,8 @@ import { hashTableStatusGradient } from "../../constants";
 import Stage from "../../types/Stage/Stage";
 import Button from "../../UI/Button/Button";
 import IComment from "./../../types/IComment/IComment";
+import Input from "../../UI/Input/Input";
+import { AnimatePresence, motion } from "framer-motion";
 
 type ColumnPropsType = {
   title: Stage;
@@ -31,9 +33,28 @@ const Column = ({
   selectTargetComment,
   openFormSubtask,
 }: ColumnPropsType) => {
+  const [search, setSearch] = useState("");
+  function changeSearchHandler(value: string) {
+    setSearch(value);
+  }
+  const filteredTasks = useMemo(() => {
+    if (!search) return tasks;
+    else {
+      return tasks.filter((task) => {
+        return task.title.toLowerCase().includes(search.toLowerCase());
+      });
+    }
+  }, [search]);
   return (
     <div className={styles.WrapperColumn}>
       <h1 style={hashTableStatusGradient[title]}>{title.toUpperCase()}</h1>
+      <Input
+        label=""
+        placeholder="Поиск по номеру и названию"
+        value={search}
+        type={"text"}
+        onChange={changeSearchHandler}
+      ></Input>
       <Droppable key={title} droppableId={title}>
         {(provided, snapshot) => (
           <div
@@ -41,7 +62,7 @@ const Column = ({
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {tasks.map((task, index) => {
+            {filteredTasks.map((task, index) => {
               return (
                 <Task
                   addFiles={addFiles}

@@ -4,7 +4,11 @@ import styles from "./Subtask.module.scss";
 import { ReactComponent as PrioritySvg } from "./../../assets/svgs/fire-svgrepo-com.svg";
 import dayjs from "dayjs";
 import { ReactComponent as TimerSvg } from "./../../assets/svgs/timer-svgrepo-com.svg";
-import { hashTablePriority, hashTableStatusGradient } from "../../constants";
+import {
+  hashTablePriority,
+  hashTableStatusGradient,
+  prioritySvgs,
+} from "../../constants";
 
 type SubtaskTypeProps = {
   subtask: ISubtask;
@@ -27,11 +31,7 @@ const Subtask = ({ subtask }: SubtaskTypeProps) => {
       <div className={styles.Header}>
         <div className={styles.Main}>
           <h2>{title}</h2>
-          <div className={styles.Priority}>
-            <PrioritySvg></PrioritySvg>
-            <PrioritySvg></PrioritySvg>
-            <PrioritySvg></PrioritySvg>
-          </div>
+          <div className={styles.Priority}>{prioritySvgs[priority]}</div>
         </div>
         <div
           className={styles.Status}

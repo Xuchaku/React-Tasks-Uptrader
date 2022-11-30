@@ -44,8 +44,8 @@ const containerVariants = {
 };
 
 const Projects = () => {
-  const projects = useSelector<storeProjects, IProject[]>(
-    (state) => state.projects
+  const { projects, isLoading } = useSelector<storeProjects, storeProjects>(
+    (state) => state
   );
 
   return (
