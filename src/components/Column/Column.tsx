@@ -1,14 +1,17 @@
 import React, { useMemo, useState } from "react";
-import styles from "./Column.module.scss";
 import { Droppable } from "react-beautiful-dnd";
-import ITask from "./../../types/ITask/ITask";
-import Task from "../Task/Task";
+
 import { hashTableStatusGradient } from "../../constants";
+
 import Stage from "../../types/Stage/Stage";
+import ITask from "./../../types/ITask/ITask";
+
 import Button from "../../UI/Button/Button";
 import IComment from "./../../types/IComment/IComment";
 import Input from "../../UI/Input/Input";
-import { AnimatePresence, motion } from "framer-motion";
+import Task from "../Task/Task";
+
+import styles from "./Column.module.scss";
 
 type ColumnPropsType = {
   title: Stage;
@@ -33,7 +36,7 @@ const Column = ({
   selectTargetComment,
   openFormSubtask,
 }: ColumnPropsType) => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
   function changeSearchHandler(value: string) {
     setSearch(value);
   }
@@ -41,10 +44,14 @@ const Column = ({
     if (!search) return tasks;
     else {
       return tasks.filter((task) => {
-        return task.title.toLowerCase().includes(search.toLowerCase());
+        return (
+          task.title.toLowerCase().includes(search.toLowerCase()) ||
+          String(task.indexNumber) == search
+        );
       });
     }
-  }, [search]);
+  }, [search, tasks]);
+
   return (
     <div className={styles.WrapperColumn}>
       <h1 style={hashTableStatusGradient[title]}>{title.toUpperCase()}</h1>
@@ -65,6 +72,7 @@ const Column = ({
             {filteredTasks.map((task, index) => {
               return (
                 <Task
+                  key={task.id}
                   addFiles={addFiles}
                   openFormSubtask={openFormSubtask}
                   selectTargetComment={selectTargetComment}

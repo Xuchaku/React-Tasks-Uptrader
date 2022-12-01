@@ -4,8 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import IComment from "../types/IComment/IComment";
 import ISubtask from "../types/ISubtask/ISubtask";
 import IProject from "./../types/IProject/IPpoject";
-import { Firestore } from "@firebase/firestore";
-import { DocumentData, QuerySnapshot, Timestamp } from "firebase/firestore";
+import { DocumentData, QuerySnapshot } from "firebase/firestore";
 import produce from "immer";
 import ITasks from "../types/ITasks/ITasks";
 
@@ -30,7 +29,7 @@ export const parseDate = function (value: string) {
 export const initNewTask = (): ITask => {
   return {
     id: uuidv4(),
-    indexNumber: 0,
+    indexNumber: Math.floor(Math.random() * 1000),
     title: "",
     description: "",
     createAt: new Date(),

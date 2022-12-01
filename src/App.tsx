@@ -1,20 +1,17 @@
+import React, { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { Firestore, getFirestore } from "firebase/firestore";
 import { AnimatePresence } from "framer-motion";
-import React, { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { api } from "./api";
-import "./App.css";
-import { DataBaseContext } from "./context";
+import { useDispatch } from "react-redux";
 import ErrorPage from "./pages/ErrorPage/ErrorPage";
 
+import "./App.css";
+import { DataBaseContext } from "./context";
 import Projects from "./pages/Projects/Projects";
 import Tasks from "./pages/Tasks/Tasks";
 import { firebaseConfig } from "./utils";
-import { useDispatch, useSelector } from "react-redux";
-import storeProjects from "./types/storeProjects/storeProjects";
-import IProject from "./types/IProject/IPpoject";
-import { fetchInitProjectBack, fetchProjects } from "./store/reducer";
+import { fetchProjects } from "./store/ActionCreators";
 
 function App() {
   const location = useLocation();
@@ -24,13 +21,8 @@ function App() {
     getFirestore(firebaseApp)
   );
 
-  const projects = useSelector<storeProjects, IProject[]>(
-    (state) => state.projects
-  );
-
   useEffect(() => {
     if (dataBase) {
-      // dispatch(fetchInitProjectBack(dataBase, projects[0]));
       dispatch(fetchProjects(dataBase));
     }
   }, [dataBase]);

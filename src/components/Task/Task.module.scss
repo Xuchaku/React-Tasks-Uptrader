@@ -110,4 +110,12 @@
       align-self: flex-end;
     }
   }
+  .IndexNumber {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    span {
+      @include text($bg-main-ui, 24px);
+    }
+  }
 }

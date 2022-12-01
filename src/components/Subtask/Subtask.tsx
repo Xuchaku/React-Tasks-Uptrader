@@ -1,31 +1,26 @@
 import React from "react";
-import ISubtask from "../../types/ISubtask/ISubtask";
-import styles from "./Subtask.module.scss";
-import { ReactComponent as PrioritySvg } from "./../../assets/svgs/fire-svgrepo-com.svg";
 import dayjs from "dayjs";
+
+import ISubtask from "../../types/ISubtask/ISubtask";
+
 import { ReactComponent as TimerSvg } from "./../../assets/svgs/timer-svgrepo-com.svg";
-import {
-  hashTablePriority,
-  hashTableStatusGradient,
-  prioritySvgs,
-} from "../../constants";
+import { hashTableStatusGradient, prioritySvgs } from "../../constants";
+
+import styles from "./Subtask.module.scss";
 
 type SubtaskTypeProps = {
   subtask: ISubtask;
 };
 
 const Subtask = ({ subtask }: SubtaskTypeProps) => {
-  const {
-    id,
-    indexNumber,
-    title,
-    description,
-    createAt,
-    timeWork,
-    endDate,
-    priority,
-    status,
-  } = subtask;
+  const { title, description, createAt, timeWork, endDate, priority, status } =
+    subtask;
+  const computedStringDate = `${dayjs(createAt).format(
+    "DD.MM.YYYY"
+  )} ${String.fromCharCode(183)} ${dayjs(endDate).format("DD.MM.YYYY")}`;
+  const computedStringWorkTime = `${dayjs(timeWork).format("d")} дней ${dayjs(
+    timeWork
+  ).format("H")} часов ${dayjs(timeWork).format("mm")} минут`;
   return (
     <div className={styles.Subtask}>
       <div className={styles.Header}>
@@ -39,18 +34,12 @@ const Subtask = ({ subtask }: SubtaskTypeProps) => {
         ></div>
       </div>
       <div className={styles.Date}>
-        <span>
-          {dayjs(createAt).format("DD.MM.YYYY")} &#183;{" "}
-          {dayjs(endDate).format("DD.MM.YYYY")}
-        </span>
+        <span>{computedStringDate}</span>
       </div>
       <div className={styles.Meta}>
         <div className={styles.Work}>
           <TimerSvg></TimerSvg>
-          <span>
-            {dayjs(timeWork).format("d")} дней {dayjs(timeWork).format("H")}{" "}
-            часов {dayjs(timeWork).format("mm")} минут
-          </span>
+          <span>{computedStringWorkTime}</span>
         </div>
       </div>
       <div className={styles.Description}>

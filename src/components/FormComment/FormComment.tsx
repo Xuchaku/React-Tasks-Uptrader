@@ -1,26 +1,32 @@
-import { motion } from "framer-motion";
 import React, { useState } from "react";
+
+import { initNewComment, isValidText } from "../../utils";
+
 import IComment from "../../types/IComment/IComment";
+
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
-import { initNewComment, isValidText } from "../../utils";
-import styles from "./CommentForm.module.scss";
 
-type CommentFormPropsType = {
+import styles from "./FormComment.module.scss";
+
+type FormCommentPropsType = {
   addComment: (comment: IComment) => void;
 };
 
-const CommentForm = ({ addComment }: CommentFormPropsType) => {
-  const [comment, setComment] = useState(initNewComment());
+const FormComment = ({ addComment }: FormCommentPropsType) => {
+  const [comment, setComment] = useState(() => initNewComment());
+
   function changeFieldText(field: keyof IComment) {
     return function (value: string) {
       setComment({ ...comment, [field]: value });
     };
   }
+
   function submitForm(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     addComment(comment);
   }
+
   return (
     <form onSubmit={submitForm} className={styles.Form}>
       <Input
@@ -44,4 +50,4 @@ const CommentForm = ({ addComment }: CommentFormPropsType) => {
   );
 };
 
-export default CommentForm;
+export default FormComment;

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
+
+import { priorityRadios, statusRadios } from "../../constants";
 import {
   classes,
   initNewTask,
@@ -12,11 +14,12 @@ import Button from "../../UI/Button/Button";
 import TextArea from "../../UI/TextArea/TextArea";
 import InputFile from "../../UI/InputFile/InputFile";
 import Input from "../../UI/Input/Input";
-import styles from "./FormTask.module.scss";
-import ITask from "../../types/ITask/ITask";
 import Radios from "../../UI/Radios/Radios";
-import { priorityRadios, statusRadios } from "../../constants";
-import File from "../File/File";
+import FileBox from "../FileBox/FileBox";
+
+import ITask from "../../types/ITask/ITask";
+
+import styles from "./FormTask.module.scss";
 
 type FormTaskPropsType = {
   addTask: (todo: ITask) => void;
@@ -29,6 +32,9 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
   const [preDateStartString, setPreDateStartString] = useState(
     dayjs(task.createAt).format("YYYY.MM.DD")
   );
+  const [preDateEndString, setPreDateEndString] = useState(
+    dayjs(task.endDate).format("YYYY.MM.DD")
+  );
 
   function submitForm(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,26 +44,26 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
       addTask(task);
     }
   }
-  const [preDateEndString, setPreDateEndString] = useState(
-    dayjs(task.endDate).format("YYYY.MM.DD")
-  );
 
   function changeFieldText(field: keyof ITask) {
     return function (value: string) {
       setTask({ ...task, [field]: value });
     };
   }
+
   function changeFieldFiles(field: "files") {
     return function (value: string[]) {
       setTask({ ...task, [field]: [...task.files, ...value] });
     };
   }
+
   function deleteFile(fileName: string) {
     return function () {
       const filteredFiles = [...task.files].filter((file) => file != fileName);
       setTask({ ...task, files: filteredFiles });
     };
   }
+
   function changeFieldDateAsString(
     fieldDate: "createAt" | "endDate",
     set: React.Dispatch<React.SetStateAction<string>>
@@ -70,6 +76,7 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
       }
     };
   }
+
   return (
     <form onSubmit={submitForm} className={styles.FormTodo}>
       <div className={styles.FormElement}>
@@ -100,7 +107,6 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
           variants={statusRadios}
         ></Radios>
       </div>
-
       <div className={styles.FormElement}>
         <Input
           label={"Дата начала"}
@@ -123,7 +129,6 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
           onBlur={isValidDate}
         ></Input>
       </div>
-
       <div className={styles.FormElement}>
         <TextArea
           label={"Описание"}
@@ -133,18 +138,20 @@ const FormTask = ({ targetTask, changeTask, addTask }: FormTaskPropsType) => {
           onBlur={isValidText}
         ></TextArea>
       </div>
-
       <div className={classes(styles.FormElement, styles.Files)}>
         {task.files.map((file) => {
           return (
-            <div className={styles.File}>
-              <File name={file} icon={FileSvg} action={deleteFile(file)}></File>
+            <div className={styles.File} key={file}>
+              <FileBox
+                name={file}
+                icon={FileSvg}
+                action={deleteFile(file)}
+              ></FileBox>
             </div>
           );
         })}
         <InputFile uploadFile={changeFieldFiles("files")}></InputFile>
       </div>
-
       <Button type="submit">Сохранить</Button>
     </form>
   );

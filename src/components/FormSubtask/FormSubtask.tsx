@@ -1,25 +1,28 @@
 import React, { useState } from "react";
-import styles from "./FormSubtask.module.scss";
+import dayjs from "dayjs";
+
 import ISubtask from "./../../types/ISubtask/ISubtask";
+
 import {
   initNewSubTask,
   isValidDate,
   isValidText,
   parseDate,
 } from "../../utils";
+import { priorityRadios, statusRadios } from "../../constants";
 import Input from "../../UI/Input/Input";
 import Radios from "../../UI/Radios/Radios";
-import { priorityRadios, statusRadios } from "../../constants";
-import dayjs from "dayjs";
 import TextArea from "../../UI/TextArea/TextArea";
 import Button from "../../UI/Button/Button";
+
+import styles from "./FormSubtask.module.scss";
 
 type FormSubtaskPropsType = {
   addSubtask: (subtask: ISubtask) => void;
 };
 
 const FormSubtask = ({ addSubtask }: FormSubtaskPropsType) => {
-  const [subtask, setSubtask] = useState(initNewSubTask());
+  const [subtask, setSubtask] = useState(() => initNewSubTask());
   const [preDateStartString, setPreDateStartString] = useState(
     dayjs(subtask.createAt).format("YYYY.MM.DD")
   );
@@ -31,11 +34,13 @@ const FormSubtask = ({ addSubtask }: FormSubtaskPropsType) => {
     event.preventDefault();
     addSubtask(subtask);
   }
+
   function changeFieldText(field: keyof ISubtask) {
     return function (value: string) {
       setSubtask({ ...subtask, [field]: value });
     };
   }
+
   function changeFieldDateAsString(
     fieldDate: "createAt" | "endDate",
     set: React.Dispatch<React.SetStateAction<string>>
@@ -48,6 +53,7 @@ const FormSubtask = ({ addSubtask }: FormSubtaskPropsType) => {
       }
     };
   }
+
   return (
     <form onSubmit={submitForm} className={styles.Form}>
       <div className={styles.FormElement}>
@@ -78,7 +84,6 @@ const FormSubtask = ({ addSubtask }: FormSubtaskPropsType) => {
           variants={statusRadios}
         ></Radios>
       </div>
-
       <div className={styles.FormElement}>
         <Input
           label={"Дата начала"}
@@ -101,7 +106,6 @@ const FormSubtask = ({ addSubtask }: FormSubtaskPropsType) => {
           onBlur={isValidDate}
         ></Input>
       </div>
-
       <div className={styles.FormElement}>
         <TextArea
           label={"Описание"}
@@ -111,7 +115,6 @@ const FormSubtask = ({ addSubtask }: FormSubtaskPropsType) => {
           onBlur={isValidText}
         ></TextArea>
       </div>
-
       <Button type="submit">Сохранить</Button>
     </form>
   );

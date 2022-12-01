@@ -1,6 +1,8 @@
-import React, { ChangeEvent, useId, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
+
 import Priority from "../../types/Priority/Priority";
 import Stage from "../../types/Stage/Stage";
+
 import styles from "./Radios.module.scss";
 
 type RadiosTypeProps = {
@@ -19,6 +21,7 @@ const Radios = ({
   initialValue,
 }: RadiosTypeProps) => {
   const [activeIndex, setActiveIndex] = useState(initialValue);
+
   function changeRadio(
     event: ChangeEvent<HTMLInputElement>,
     index: Stage | Priority
@@ -26,11 +29,15 @@ const Radios = ({
     onChange(event.target.value);
     setActiveIndex(index);
   }
+
   return (
     <div className={styles.Radios}>
       <span>{label}</span>
       {variants.map((variant, index) => {
         const id = Math.random().toString();
+        const computedStyle = {
+          opacity: activeIndex == variant.value ? 1 : 0.5,
+        };
         return (
           <>
             <input
@@ -40,12 +47,7 @@ const Radios = ({
               value={variant.value}
               onChange={(event) => changeRadio(event, variant.value)}
             ></input>
-            <label
-              style={{
-                opacity: activeIndex == variant.value ? 1 : 0.5,
-              }}
-              htmlFor={id}
-            >
+            <label style={computedStyle} htmlFor={id}>
               {variant.view}
             </label>
           </>

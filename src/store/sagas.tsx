@@ -1,18 +1,15 @@
 import { DocumentData, QuerySnapshot } from "firebase/firestore";
-import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
+import { call, put, takeEvery } from "redux-saga/effects";
 import { api } from "../api";
-import IProject from "../types/IProject/IPpoject";
-import { transformToProjects } from "../utils";
 import {
-  ActionTypes,
   FecthPutProjectAction,
   FetchInitProjectAction,
   FetchProjectsAction,
-  setFailLoad,
-  setLoad,
-  setProjects,
-  TaskAction,
-} from "./reducer";
+} from "../types/ActionCreatorsTypes/ActionCreatorsTypes";
+import { ActionTypes } from "../types/ActionTypes/ActionTypes";
+
+import { transformToProjects } from "../utils";
+import { setFailLoad, setLoad, setProjects } from "./ActionCreators";
 
 function* fetchInitProject(action: FetchInitProjectAction) {
   try {

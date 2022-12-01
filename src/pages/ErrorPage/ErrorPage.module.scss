@@ -1,0 +1,8 @@
+@import "./../../global/style.scss";
+.ErrorPage {
+  @include header(white, 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

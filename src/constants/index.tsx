@@ -1,5 +1,4 @@
 import Stage from "./../types/Stage/Stage";
-
 import { ReactComponent as PrioritySvg } from "./../assets/svgs/fire-svgrepo-com.svg";
 import Priority from "./../types/Priority/Priority";
 

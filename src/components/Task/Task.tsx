@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
+import dayjs from "dayjs";
+import { AnimatePresence, motion } from "framer-motion";
+
 import { ReactComponent as EditSvg } from "./../../assets/svgs/edit-svgrepo-com.svg";
-import { ReactComponent as PrioritySvg } from "./../../assets/svgs/fire-svgrepo-com.svg";
 import { ReactComponent as Arrow } from "./../../assets/svgs/up-svgrepo-com.svg";
 import { ReactComponent as FileSvg } from "./../../assets/svgs/file-svgrepo-com.svg";
 import { ReactComponent as TimerSvg } from "./../../assets/svgs/timer-svgrepo-com.svg";
 import { ReactComponent as CommentSvg } from "./../../assets/svgs/commenting-svgrepo-com.svg";
-import File from "../File/File";
-import ITask from "../../types/ITask/ITask";
+import FileBox from "../FileBox/FileBox";
 import Comment from "./../Comment/Comment";
-import dayjs from "dayjs";
-import styles from "./Task.module.scss";
-import { hashTablePriority, prioritySvgs } from "../../constants";
 import Button from "../../UI/Button/Button";
-import { AnimatePresence, motion } from "framer-motion";
 import Subtask from "../Subtask/Subtask";
-import IComment from "../../types/IComment/IComment";
 import InputFile from "../../UI/InputFile/InputFile";
+
+import ITask from "../../types/ITask/ITask";
+import IComment from "../../types/IComment/IComment";
+
+import { prioritySvgs } from "../../constants";
+
+import styles from "./Task.module.scss";
+import { collapseVariants } from "../../constants/variants";
 
 type TaskPropsType = {
   task: ITask;
@@ -45,9 +49,9 @@ const Task = ({
     createAt,
     description,
     timeWork,
+    indexNumber,
     priority,
     endDate,
-    status,
     files,
     subtasks,
     comments,
@@ -55,24 +59,56 @@ const Task = ({
   const [isCollapsedFiles, setIsCollapsedFiles] = useState(true);
   const [isCollapsedSubtasks, setIsCollapsedSubtasks] = useState(true);
   const [isCollapsedComments, setIsCollapsedComments] = useState(true);
+
+  const computedStringDate = `${dayjs(createAt).format(
+    "DD.MM.YYYY"
+  )} ${String.fromCharCode(183)} ${dayjs(endDate).format("DD.MM.YYYY")}`;
+  const computedStringWorkTime = `${dayjs(timeWork).format("d")} дней ${dayjs(
+    timeWork
+  ).format("H")} часов ${dayjs(timeWork).format("mm")} минут`;
+  const computedStyleArrowFiles = {
+    width: 12,
+    height: 12,
+    transition: "0.2s",
+    transform: `rotate(${isCollapsedFiles ? "180deg" : "0deg"})`,
+  };
+  const computedStyleArrowSubtasks = {
+    width: 12,
+    height: 12,
+    transition: "0.2s",
+    transform: `rotate(${isCollapsedSubtasks ? "180deg" : "0deg"})`,
+  };
+  const computedStyleArrowComments = {
+    width: 12,
+    height: 12,
+    transition: "0.2s",
+    transform: `rotate(${isCollapsedComments ? "180deg" : "0deg"})`,
+  };
+
   function toggleCollapseFiles() {
     setIsCollapsedFiles(!isCollapsedFiles);
   }
+
   function toggleCollapseSubtasks() {
     setIsCollapsedSubtasks(!isCollapsedSubtasks);
   }
+
   function toggleCollapseComments() {
     setIsCollapsedComments(!isCollapsedComments);
   }
+
   function selectTaskFromSubTask() {
     openFormSubtask(task);
   }
+
   function selectTaskHandler() {
     selectTargetTask(task);
   }
+
   function selectFilesHandler() {
     selectTargetTaskForFiles(task);
   }
+
   function selectFiles(files: string[]) {
     addFiles(files);
   }
@@ -80,6 +116,7 @@ const Task = ({
   function selectTaskForCommentHandler() {
     openFormComment(task);
   }
+
   return (
     <Draggable draggableId={id} index={index} key={id}>
       {(provided, snapshot) => (
@@ -99,55 +136,47 @@ const Task = ({
             </div>
           </div>
           <div className={styles.Date}>
-            <span>
-              {dayjs(createAt).format("DD.MM.YYYY")} &#183;{" "}
-              {dayjs(endDate).format("DD.MM.YYYY")}
-            </span>
+            <span>{computedStringDate}</span>
           </div>
           <div className={styles.Meta}>
             <div className={styles.Work}>
               <TimerSvg></TimerSvg>
-              <span>
-                {dayjs(timeWork).format("d")} дней {dayjs(timeWork).format("H")}{" "}
-                часов {dayjs(timeWork).format("mm")} минут
-              </span>
+              <span>{computedStringWorkTime}</span>
             </div>
           </div>
           <div className={styles.Description}>
             <p>{description}</p>
           </div>
-
           <div className={styles.Collapse}>
             <Button variant="text" onClick={toggleCollapseFiles}>
               <>
                 <span>Файлы</span>
-                <Arrow
-                  style={{
-                    width: 12,
-                    height: 12,
-                    transition: "0.2s",
-                    transform: `rotate(${
-                      isCollapsedFiles ? "180deg" : "0deg"
-                    })`,
-                  }}
-                ></Arrow>
+                <Arrow style={computedStyleArrowFiles}></Arrow>
               </>
             </Button>
           </div>
+
           <AnimatePresence>
             {!isCollapsedFiles && (
               <motion.div
                 style={{ overflow: "hidden" }}
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+                variants={collapseVariants}
+                initial={"hidden"}
+                animate={"visible"}
+                exit={"exit"}
               >
                 <div className={styles.Collapsed}>
                   {files.length > 0 && (
                     <div className={styles.Files}>
                       <div className={styles.FilesList}>
                         {files.map((file) => {
-                          return <File name={file} icon={FileSvg}></File>;
+                          return (
+                            <FileBox
+                              key={file}
+                              name={file}
+                              icon={FileSvg}
+                            ></FileBox>
+                          );
                         })}
                       </div>
                     </div>
@@ -164,16 +193,7 @@ const Task = ({
             <Button variant="text" onClick={toggleCollapseSubtasks}>
               <>
                 <span>Подзадачи</span>
-                <Arrow
-                  style={{
-                    width: 12,
-                    height: 12,
-                    transition: "0.2s",
-                    transform: `rotate(${
-                      isCollapsedSubtasks ? "180deg" : "0deg"
-                    })`,
-                  }}
-                ></Arrow>
+                <Arrow style={computedStyleArrowSubtasks}></Arrow>
               </>
             </Button>
           </div>
@@ -182,9 +202,10 @@ const Task = ({
             {!isCollapsedSubtasks && (
               <motion.div
                 style={{ overflow: "hidden" }}
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+                variants={collapseVariants}
+                initial={"hidden"}
+                animate={"visible"}
+                exit={"exit"}
               >
                 <div className={styles.Collapsed}>
                   <div className={styles.Subtasks}>
@@ -205,16 +226,7 @@ const Task = ({
             <Button variant="text" onClick={toggleCollapseComments}>
               <>
                 <span>Комментарии</span>
-                <Arrow
-                  style={{
-                    width: 12,
-                    height: 12,
-                    transition: "0.2s",
-                    transform: `rotate(${
-                      isCollapsedComments ? "180deg" : "0deg"
-                    })`,
-                  }}
-                ></Arrow>
+                <Arrow style={computedStyleArrowComments}></Arrow>
               </>
             </Button>
           </div>
@@ -223,9 +235,10 @@ const Task = ({
             {!isCollapsedComments && (
               <motion.div
                 style={{ overflow: "hidden" }}
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+                variants={collapseVariants}
+                initial={"hidden"}
+                animate={"visible"}
+                exit={"exit"}
               >
                 <div className={styles.Collapsed}>
                   <div className={styles.Comments}>
@@ -248,6 +261,9 @@ const Task = ({
               </motion.div>
             )}
           </AnimatePresence>
+          <div className={styles.IndexNumber}>
+            <span>({indexNumber})</span>
+          </div>
         </div>
       )}
     </Draggable>

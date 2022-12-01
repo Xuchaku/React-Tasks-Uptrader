@@ -1,8 +1,9 @@
 import React, { ChangeEvent, useId, useState } from "react";
-import styles from "./TextArea.module.scss";
 import { FocusEvent } from "react";
+
 import { classes } from "../../utils";
 
+import styles from "./TextArea.module.scss";
 type TextAreaPropsType = {
   label: string;
   value: string;
@@ -22,6 +23,7 @@ const TextArea = ({
 }: TextAreaPropsType) => {
   const [isValidSelf, setIsValidSelf] = useState(true);
   const id = useId();
+
   const extendClasses = isValidSelf
     ? [styles.TextArea]
     : [styles.TextArea, styles.Error];

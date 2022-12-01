@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { ReactElement } from "react";
+import { popupVariants } from "../../constants/variants";
 import Portal from "../Portal/Portal";
 import styles from "./Popup.module.scss";
 
@@ -15,12 +16,10 @@ const Popup = ({ children, onClose, isOpened }: PopupPropsType) => {
       {isOpened && (
         <Portal>
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{
-              opacity: 1,
-              height: "auto",
-            }}
-            exit={{ opacity: 0 }}
+            variants={popupVariants}
+            initial={"hidden"}
+            animate={"visible"}
+            exit={"exit"}
             className={styles.Popup}
           >
             <div className={styles.Overlay} onClick={onClose}></div>
